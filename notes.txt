@@ -1,12 +1,14 @@
--- Full Deployment Rundown
+Full Deployment Rundown
 
- - These steps build, deploy, and configure your app for GitHub Pages, 
- 
-   - ensuring deploy-branch contains only dist/ and .gitignore.
+These steps build, deploy, and configure your app for GitHub Pages,
+
+ensuring deploy-branch contains only .gitignore, index.html, and bundle.js at root.
+
+// //////
 
 
 -- Verify .gitignore on main:
-
+ 
  - Open .gitignore in your project root. Ensure it contains:
 
 node_modules/
@@ -14,10 +16,15 @@ dist/
 
  - If not, update it:
 
+
 echo -e "node_modules/\ndist/" > .gitignore
+
 git add .gitignore
+
 git commit -m "Update .gitignore for main"
+
 git push origin main
+
 
  - This keeps main clean of generated files.
 
@@ -28,150 +35,168 @@ git push origin main
 
 npm run build
 
- - Creates dist/ with index.html, bundle.js, etc.
+ - Creates dist/ with index.html, bundle.js.
 
 // //////
 
 
 -- Create/Update deploy-branch:
 
- -  Switch to deploy-branch (create if new)
+ - Switch to deploy-branch (create if new):
 
 git checkout -b deploy-branch || git checkout deploy-branch
 
 // //////
 
 
--- Remove old dist/ (if any)
-
-git rm -rf dist/
-
-// //////
+-- Clear all tracked files (if any):
 
 
--- Copy new dist/ from main
+git rm -rf --cached .
 
-git checkout main -- dist/
+git commit -m "Clear deploy-branch" --allow-empty
 
 // //////
 
 
--- Create .gitignore for deploy-branch
+-- Move dist/ contents to root:
+
+mv dist/* .
+
+rm -rf dist/
+
+// //////
+
+
+-- Create .gitignore for deploy-branch:
+
 
 echo "node_modules/" > .gitignore
 
 // //////
 
 
--- Stage and commit
+-- Stage and commit:
 
-git add dist/ .gitignore
-git commit -m "Add dist/ and .gitignore to deploy-branch"
 
--- Push to GitHub
+git add index.html bundle.js .gitignore
 
-git push origin deploy-branch
+git commit -m "Add root files to deploy-branch"
 
 // //////
 
 
--- Return to main
+Verify staged files:
+
+git status
+
+- Should show: .gitignore, bundle.js, index.html.
+
+// //////
+
+
+-- Push to GitHub:
+
+
+git push origin deploy-branch 
+
+// //////
+
+
+-- Remove untracked files on deploy-branch:
+
+
+git clean -fd
+
+ - Removes untracked files (e.g., src/, README.md, notes.txt) 
+
+   - from local deploy-branch directory.
+
+// //////
+
+
+Verify:
+
+ls
+
+ - Should show: bundle.js index.html .gitignore.
+
+// //////
+
+
+-- Return to main:
+
 
 git checkout main
 
- - What’s on deploy-branch: Only dist/ and .gitignore 
- - (ignoring node_modules). No src/, package.json, or Webpack files.
+ - What’s on deploy-branch: Only .gitignore, index.html, bundle.js 
+ 
+ - (ignoring node_modules). No dist/, src/, package.json, or Webpack files.
 
 // //////
 
 
 -- Configure GitHub Pages:
- 
- - Go to https://github.com/<your-username>/todo-list/settings/pages.
 
- - Under Pages:
-
-   - Set Source to Deploy from a branch.
-
- - Select deploy-branch (available since you pushed it).
-
-   - Set folder to /dist.
-
- - Click Save.
+- Go to https://github.com/chadelz-dev/cardelz-todo-list/settings/pages.
 
 
- - GitHub shows: “Your site is published at https://<your-username>.github.io/todo-list/” (may take a few minutes).
+Under Pages:
 
-// //////
+Set Source to Deploy from a branch.
+
+Select deploy-branch (available since you pushed it).
+
+Set folder to / (root).
+
+Click Save.
 
 
--- Test Locally:
-
- - Run dev server:
-
-npm run start
-
-Open http://localhost:8080.
+GitHub shows: “Your site is published at
+ https://chadelz-dev.github.io/todo-list/” (may take 5–10 minutes).
 
 // //////
 
 
--- Test:
- 
- - Render: Header, sub-header, main, fixed footer.
+-- Verify GitHub Pages:
 
+Visit https://chadelz-dev.github.io/cardelz-todo-list/.
 
- - Projects/Todos: Add project (e.g., “Work”), 
-   
-   - add todo with title, description, due date, priority, 
-
-   - notes (checklist optional).
-
-
- - Persistence: Close browser, reopen—todos persist.
-
-
- - Buttons: Todo bubble buttons
-  
-   - (Edit, Delete, Collapse, Complete, Save, Cancel) 
-   
-   - have margins, orange, rounded.
-
-
- - Checklist: Save todo without checklist.
-
-
- - DevTools:
-
-   - Console: No errors; “Saved to localStorage:”.
-
-
- - Application: todoApp in localStorage.
+Test all features (persistence, buttons, checklist, etc.).
 
 // //////
 
 
-Build and test:
+DevTools:
+
+Console: No errors.
+
+Application: todoApp updates.
+
+If the site doesn’t load, check Pages settings or share errors.
+
+// //////
+
+
+-- Future Updates:
+
+
+git checkout main
 
 npm run build
 
- - Open dist/index.html in a browser; confirm functionality.
+git checkout deploy-branch
 
+rm -f index.html bundle.js
 
- - Verify GitHub Pages:
+mv ../dist/* .
 
-   - Visit https://<your-username>.github.io/cardelz-todo-list/.
+git add index.html bundle.js
 
+git commit -m "Update root files"
 
- - Test all features (persistence, buttons, checklist, etc.).
+git push origin deploy-branch
 
+git checkout main
 
- - DevTools:
-
-   - Console: No errors.
-
-
- - Application: todoApp updates.
-
-   - If the site doesn’t load, check Pages settings or share errors.
 
