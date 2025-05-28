@@ -1,0 +1,177 @@
+-- Full Deployment Rundown
+
+ - These steps build, deploy, and configure your app for GitHub Pages, 
+ 
+   - ensuring deploy-branch contains only dist/ and .gitignore.
+
+
+-- Verify .gitignore on main:
+
+ - Open .gitignore in your project root. Ensure it contains:
+
+node_modules/
+dist/
+
+ - If not, update it:
+
+echo -e "node_modules/\ndist/" > .gitignore
+git add .gitignore
+git commit -m "Update .gitignore for main"
+git push origin main
+
+ - This keeps main clean of generated files.
+
+// ////////////////////////////////////////////////////////////////////////////
+
+
+-- Build the App:
+
+npm run build
+
+ - Creates dist/ with index.html, bundle.js, etc.
+
+// //////
+
+
+-- Create/Update deploy-branch:
+
+ -  Switch to deploy-branch (create if new)
+
+git checkout -b deploy-branch || git checkout deploy-branch
+
+// //////
+
+
+-- Remove old dist/ (if any)
+
+git rm -rf dist/
+
+// //////
+
+
+-- Copy new dist/ from main
+
+git checkout main -- dist/
+
+// //////
+
+
+-- Create .gitignore for deploy-branch
+
+echo "node_modules/" > .gitignore
+
+// //////
+
+
+-- Stage and commit
+
+git add dist/ .gitignore
+git commit -m "Add dist/ and .gitignore to deploy-branch"
+
+-- Push to GitHub
+
+git push origin deploy-branch
+
+// //////
+
+
+-- Return to main
+
+git checkout main
+
+ - What’s on deploy-branch: Only dist/ and .gitignore 
+ - (ignoring node_modules). No src/, package.json, or Webpack files.
+
+// //////
+
+
+-- Configure GitHub Pages:
+ 
+ - Go to https://github.com/<your-username>/todo-list/settings/pages.
+
+ - Under Pages:
+
+   - Set Source to Deploy from a branch.
+
+ - Select deploy-branch (available since you pushed it).
+
+   - Set folder to /dist.
+
+ - Click Save.
+
+
+ - GitHub shows: “Your site is published at https://<your-username>.github.io/todo-list/” (may take a few minutes).
+
+// //////
+
+
+-- Test Locally:
+
+ - Run dev server:
+
+npm run start
+
+Open http://localhost:8080.
+
+// //////
+
+
+-- Test:
+ 
+ - Render: Header, sub-header, main, fixed footer.
+
+
+ - Projects/Todos: Add project (e.g., “Work”), 
+   
+   - add todo with title, description, due date, priority, 
+
+   - notes (checklist optional).
+
+
+ - Persistence: Close browser, reopen—todos persist.
+
+
+ - Buttons: Todo bubble buttons
+  
+   - (Edit, Delete, Collapse, Complete, Save, Cancel) 
+   
+   - have margins, orange, rounded.
+
+
+ - Checklist: Save todo without checklist.
+
+
+ - DevTools:
+
+   - Console: No errors; “Saved to localStorage:”.
+
+
+ - Application: todoApp in localStorage.
+
+// //////
+
+
+Build and test:
+
+npm run build
+
+ - Open dist/index.html in a browser; confirm functionality.
+
+
+ - Verify GitHub Pages:
+
+   - Visit https://<your-username>.github.io/cardelz-todo-list/.
+
+
+ - Test all features (persistence, buttons, checklist, etc.).
+
+
+ - DevTools:
+
+   - Console: No errors.
+
+
+ - Application: todoApp updates.
+
+   - If the site doesn’t load, check Pages settings or share errors.
+
