@@ -138,7 +138,7 @@ git checkout main
 
 -- Configure GitHub Pages:
 
-- Go to https://github.com/chadelz-dev/cardelz-todo-list/settings/pages.
+- Go to https://github.com/chadelz-dev/todo-list/settings/pages.
 
 
 Under Pages:
@@ -160,7 +160,7 @@ GitHub shows: “Your site is published at
 
 -- Verify GitHub Pages:
 
-Visit https://chadelz-dev.github.io/cardelz-todo-list/.
+Visit https://chadelz-dev.github.io/todo-list/.
 
 Test all features (persistence, buttons, checklist, etc.).
 
